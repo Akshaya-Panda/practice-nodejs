@@ -1,0 +1,465 @@
+URL:
+
+api.mapbox.com/search/geocode/v6/reverse?longitude=151.2057218&latitude=-33.837824&language=en&access_token=pk.eyJ1Ijoic2F0eWFqZWV0cmFqdXBhbGkiLCJhIjoiY2twZmkyZzZkMGk5bzJ2cmkybzgzOGs0cSJ9.D31Hwm9XcKST58x-UWC_1w
+
+
+
+Access Token = pk.eyJ1Ijoic2F0eWFqZWV0cmFqdXBhbGkiLCJhIjoiY2twZmkyZzZkMGk5bzJ2cmkybzgzOGs0cSJ9.D31Hwm9XcKST58x-UWC_1w
+
+Longitude=151.2057218
+Latitude=-33.837824
+
+
+Data Received:
+
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "id": "dXJuOm1ieGFkcjpiZjg5OTcxOC05YzlhLTRiMzktYjQ2Zi0xMjgyYWE5N2VmODA",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    151.2055947,
+                    -33.83784
+                ]
+            },
+            "properties": {
+                "mapbox_id": "dXJuOm1ieGFkcjpiZjg5OTcxOC05YzlhLTRiMzktYjQ2Zi0xMjgyYWE5N2VmODA",
+                "feature_type": "address",
+                "full_address": "100 Pacific Highway, North Sydney New South Wales 2060, Australia",
+                "name": "100 Pacific Highway",
+                "name_preferred": "100 Pacific Highway",
+                "coordinates": {
+                    "longitude": 151.2055947,
+                    "latitude": -33.83784,
+                    "accuracy": "rooftop",
+                    "routable_points": [
+                        {
+                            "name": "default",
+                            "latitude": -33.837705,
+                            "longitude": 151.206117
+                        }
+                    ]
+                },
+                "place_formatted": "North Sydney New South Wales 2060, Australia",
+                "context": {
+                    "address": {
+                        "mapbox_id": "dXJuOm1ieGFkcjpiZjg5OTcxOC05YzlhLTRiMzktYjQ2Zi0xMjgyYWE5N2VmODA",
+                        "address_number": "100",
+                        "street_name": "Pacific Highway",
+                        "name": "100 Pacific Highway"
+                    },
+                    "street": {
+                        "mapbox_id": "dXJuOm1ieGFkci1zdHI6YmY4OTk3MTgtOWM5YS00YjM5LWI0NmYtMTI4MmFhOTdlZjgw",
+                        "name": "Pacific Highway"
+                    },
+                    "postcode": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpDYTRP",
+                        "name": "2060"
+                    },
+                    "locality": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpFRFJLRGc",
+                        "name": "North Sydney",
+                        "wikidata_id": "Q3276625"
+                    },
+                    "place": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpBWFhJRGc",
+                        "name": "Sydney",
+                        "wikidata_id": "Q3130"
+                    },
+                    "region": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpoQTQ",
+                        "name": "New South Wales",
+                        "wikidata_id": "Q3224",
+                        "region_code": "NSW",
+                        "region_code_full": "AU-NSW"
+                    },
+                    "country": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpJZzQ",
+                        "name": "Australia",
+                        "wikidata_id": "Q408",
+                        "country_code": "AU",
+                        "country_code_alpha_3": "AUS"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "dXJuOm1ieHBsYzpDYTRP",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    151.206865,
+                    -33.838904
+                ]
+            },
+            "properties": {
+                "mapbox_id": "dXJuOm1ieHBsYzpDYTRP",
+                "feature_type": "postcode",
+                "full_address": "2060, North Sydney, New South Wales, Australia",
+                "name": "2060",
+                "name_preferred": "2060",
+                "coordinates": {
+                    "longitude": 151.206865,
+                    "latitude": -33.838904
+                },
+                "place_formatted": "North Sydney, New South Wales, Australia",
+                "bbox": [
+                    151.192833,
+                    -33.850599,
+                    151.218625,
+                    -33.82808
+                ],
+                "context": {
+                    "locality": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpFRFJLRGc",
+                        "name": "North Sydney",
+                        "wikidata_id": "Q3276625"
+                    },
+                    "place": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpBWFhJRGc",
+                        "name": "Sydney",
+                        "wikidata_id": "Q3130"
+                    },
+                    "region": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpoQTQ",
+                        "name": "New South Wales",
+                        "wikidata_id": "Q3224",
+                        "region_code": "NSW",
+                        "region_code_full": "AU-NSW"
+                    },
+                    "country": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpJZzQ",
+                        "name": "Australia",
+                        "wikidata_id": "Q408",
+                        "country_code": "AU",
+                        "country_code_alpha_3": "AUS"
+                    },
+                    "postcode": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpDYTRP",
+                        "name": "2060"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "dXJuOm1ieHBsYzpFRFJLRGc",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    151.207669,
+                    -33.834843
+                ]
+            },
+            "properties": {
+                "mapbox_id": "dXJuOm1ieHBsYzpFRFJLRGc",
+                "feature_type": "locality",
+                "full_address": "North Sydney, New South Wales, Australia",
+                "name": "North Sydney",
+                "name_preferred": "North Sydney",
+                "coordinates": {
+                    "longitude": 151.207669,
+                    "latitude": -33.834843
+                },
+                "place_formatted": "New South Wales, Australia",
+                "bbox": [
+                    151.2004619,
+                    -33.8461207,
+                    151.2207164,
+                    -33.8280673
+                ],
+                "context": {
+                    "place": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpBWFhJRGc",
+                        "name": "Sydney",
+                        "wikidata_id": "Q3130"
+                    },
+                    "region": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpoQTQ",
+                        "name": "New South Wales",
+                        "wikidata_id": "Q3224",
+                        "region_code": "NSW",
+                        "region_code_full": "AU-NSW"
+                    },
+                    "country": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpJZzQ",
+                        "name": "Australia",
+                        "wikidata_id": "Q408",
+                        "country_code": "AU",
+                        "country_code_alpha_3": "AUS"
+                    },
+                    "locality": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpFRFJLRGc",
+                        "name": "North Sydney",
+                        "wikidata_id": "Q3276625"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "dXJuOm1ieHBsYzpBWFhJRGc",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    151.20699,
+                    -33.87078
+                ]
+            },
+            "properties": {
+                "mapbox_id": "dXJuOm1ieHBsYzpBWFhJRGc",
+                "feature_type": "place",
+                "full_address": "Sydney, New South Wales, Australia",
+                "name": "Sydney",
+                "name_preferred": "Sydney",
+                "coordinates": {
+                    "longitude": 151.20699,
+                    "latitude": -33.87078
+                },
+                "place_formatted": "New South Wales, Australia",
+                "bbox": [
+                    150.5209341,
+                    -34.1171753,
+                    151.3698841,
+                    -33.5626443
+                ],
+                "context": {
+                    "region": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpoQTQ",
+                        "name": "New South Wales",
+                        "wikidata_id": "Q3224",
+                        "region_code": "NSW",
+                        "region_code_full": "AU-NSW"
+                    },
+                    "country": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpJZzQ",
+                        "name": "Australia",
+                        "wikidata_id": "Q408",
+                        "country_code": "AU",
+                        "country_code_alpha_3": "AUS"
+                    },
+                    "place": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpBWFhJRGc",
+                        "name": "Sydney",
+                        "wikidata_id": "Q3130"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "dXJuOm1ieHBsYzpoQTQ",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    147.014694071448,
+                    -32.168971672412
+                ]
+            },
+            "properties": {
+                "mapbox_id": "dXJuOm1ieHBsYzpoQTQ",
+                "feature_type": "region",
+                "full_address": "New South Wales, Australia",
+                "name": "New South Wales",
+                "name_preferred": "New South Wales",
+                "coordinates": {
+                    "longitude": 147.014694071448,
+                    "latitude": -32.168971672412
+                },
+                "place_formatted": "Australia",
+                "bbox": [
+                    140.999265,
+                    -37.5097258,
+                    159.200456,
+                    -28.1370359
+                ],
+                "context": {
+                    "country": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpJZzQ",
+                        "name": "Australia",
+                        "wikidata_id": "Q408",
+                        "country_code": "AU",
+                        "country_code_alpha_3": "AUS"
+                    },
+                    "region": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpoQTQ",
+                        "name": "New South Wales",
+                        "wikidata_id": "Q3224"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "dXJuOm1ieHBsYzpJZzQ",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    134.489562606981,
+                    -25.7349684916223
+                ]
+            },
+            "properties": {
+                "mapbox_id": "dXJuOm1ieHBsYzpJZzQ",
+                "feature_type": "country",
+                "full_address": "Australia",
+                "name": "Australia",
+                "name_preferred": "Australia",
+                "coordinates": {
+                    "longitude": 134.489562606981,
+                    "latitude": -25.7349684916223
+                },
+                "bbox": [
+                    112.8256904,
+                    -54.8327658,
+                    159.200456,
+                    -9.0436707
+                ],
+                "context": {
+                    "country": {
+                        "mapbox_id": "dXJuOm1ieHBsYzpJZzQ",
+                        "name": "Australia",
+                        "country_code": "AU",
+                        "country_code_alpha_3": "AUS",
+                        "wikidata_id": "Q408"
+                    }
+                }
+            }
+        }
+    ],
+    "attribution": "NOTICE: © 2024 Mapbox and its suppliers. All rights reserved. Use of this data is subject to the Mapbox Terms of Service (https://www.mapbox.com/about/maps/). This response and the information it contains may not be retained."
+}
+
+
+
+
+
+
+
+
+
+var Promise = require('bluebird')
+var request = require('request')
+const util = require('util')
+var r = require('rethinkdb')
+var db = require('../db/index')
+var logger = require('./logger')
+var log = logger.createLogger('util:geocoder')
+
+let apiUrl
+let apiKey
+
+const setApiOptions = function (url, key) {
+    apiKey = key
+    apiUrl = url
+}
+
+let providerName
+
+const setProviderName = function (name) {
+    providerName = name
+}
+
+const defaultGeo = function () {
+    return {
+        city: providerName || "unknown"
+    }
+}
+
+const reverseGecode = function (location) {
+    return new Promise(async function (resolve, reject) {
+        if (!location || !location.latitude || !location.longitude) {
+            resolve(defaultGeo())
+            return
+        }
+
+        let geoObject
+        const lookup = await lookupCache(location.latitude, location.longitude)
+        if (!lookup) {
+            try {
+                if (!apiKey || !apiUrl) {
+                    log.info(`Mapbox API key or url not provided, using default location instead`)
+                    return resolve(defaultGeo())
+                } 
+                const geoResult = await fetchCity(location)
+                geoObject = geoResult
+                await insertToCache(location.latitude, location.longitude, geoObject)
+            } catch (defaultGeo) {
+                geoObject = defaultGeo
+            }
+
+        } else {
+            geoObject = lookup.geo
+        }
+
+        resolve(geoObject)
+    })
+}
+
+let fetchCity = function (location) {
+    return new Promise(async function (resolve, reject) {
+        let parsedURL = `${apiUrl}/${location.longitude},${location.latitude}.json?limit=1&language=en&access_token=${apiKey}`
+        try {
+            request.get(
+                parsedURL, {
+                rejectUnauthorized: false,
+                strictSSL: false
+            }, function (err, res) {
+                if (err || !res) {
+                    console.error(util.format('Could not fetch place name %s', err))
+                    return reject(defaultGeo())
+                } else if (res.statusCode !== 200) {
+                    console.error(util.format('Could not fetch place name %d, %s', res.statusCode, err))
+                    return reject(defaultGeo())
+                } else {
+                    const data = JSON.parse(res.body)
+                    if (!data.features || data.features.length == 0) {
+                        resolve({ city: "Unknown city" })
+                    } else {
+                        const feature = data.features[0]
+                        const city =
+                            feature.place_type[0] === "place" ? feature.text :
+                                feature.place_type[0] === "locality" ? feature.text :
+                                    feature.place_type[0] === "district" ? feature.text :
+                                        feature.place_type[0] === "region" ? feature.text :
+                                            feature.context.find(c => c.id.includes("place")).text
+                        resolve({ city })
+                    }
+                }
+            })
+        } catch (err) {
+            log.error(err.message)
+            return reject(defaultGeo())
+        }
+    })
+}
+
+const lookupCache = function (latitude, longitude) {
+    const point = r.point(parseFloat(longitude.toFixed(3)), parseFloat(latitude.toFixed(3)))
+    return db.run(r.table('locationCache').getNearest(point, {
+        index: 'location', maxResults: 1, unit: 'm', maxDist: 100
+    })).then(function (locationCacheResult) {
+        if (locationCacheResult && locationCacheResult.length > 0) {
+            return locationCacheResult[0].doc
+        } else {
+            return null
+        }
+    })
+}
+
+const insertToCache = function (latitude, longitude, geo) {
+    const point = r.point(parseFloat(longitude.toFixed(3)), parseFloat(latitude.toFixed(3)))
+    return db.run(r.table('locationCache').insert({
+        id: `${longitude.toFixed(3)},${latitude.toFixed(3)}`,
+        location: point, geo: geo
+    }, { conflict: "update" }))
+}
+
+module.exports.reverseGecode = reverseGecode
+module.exports.setApiOptions = setApiOptions
+module.exports.setProviderName = setProviderName
+module.exports.defaultGeo = defaultGeo
