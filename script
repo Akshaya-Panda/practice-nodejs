@@ -145,3 +145,15 @@ pyenv global 3.10.11
 
 #install the dependency for python script
 pip3 install -r requirements.txt
+
+git checkout ios-qvh-main
+cd tmdc/devicefarmer-stf
+npm install
+brew install libusb
+brew install pkg-config
+brew install ffmpeg@6
+brew install mobiledevice
+echo 'export PATH="/opt/homebrew/opt/ffmpeg@6/bin:$PATH"' >> ~/.bash_profile
+export PKG_CONFIG_PATH="/opt/homebrew/opt/ffmpeg@6/lib/pkgconfig"
+export LDFLAGS="-L/opt/homebrew/opt/ffmpeg@6/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/ffmpeg@6/include"
