@@ -1,0 +1,147 @@
+#!/bin/bash
+ 
+if [ "$EUID" -eq 0 ]; then
+  echo "Do not run as root!"
+  exit 1
+fi
+
+# Function to ensure a package is installed via Homebrew
+function ensure_brew_installed {
+  if ! brew list "$1" &>/dev/null; then
+    brew install "$1"
+  else
+    echo "$1 is already installed"
+  fi
+}
+
+# Function to ensure a global npm package is installed
+function ensure_npm_global_installed {
+  if ! npm list -g "$1" &>/dev/null; then
+    npm install -g "$1"
+  else
+    echo "$1 is already installed globally"
+  fi
+}
+
+# Function to ensure a Node.js version is installed via NVM
+function ensure_nvm_installed {
+  if ! nvm ls "$1" &>/dev/null; then
+    nvm install "$1"
+  else
+    echo "Node.js $1 is already installed via NVM"
+  fi
+}
+
+# Install Node.js and Appium
+ensure_brew_installed node
+ensure_npm_global_installed appium
+
+# Check if xcuitest driver is installed
+if appium driver list --installed | grep -q 'xcuitest'; then
+  echo "xcuitest driver is already installed"
+else
+  appium driver install xcuitest
+fi
+
+ensure_npm_global_installed pm2
+
+# Install NVM
+ensure_brew_installed nvm
+
+# Add NVM configuration to shell profile if not already added
+NVM_CONFIG='
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"
+source $(brew --prefix nvm)/nvm.sh
+'
+
+if ! grep -q 'export NVM_DIR="\$HOME/.nvm"' "$HOME/.bash_profile"; then
+  echo "$NVM_CONFIG" >> "$HOME/.bash_profile"
+fi
+
+# Source the shell profile to make NVM available
+source "$HOME/.bash_profile"
+
+# Install Node versions using NVM
+ensure_nvm_installed node
+ensure_nvm_installed 17.1.0
+
+# Install other required packages
+ensure_brew_installed zeromq
+ensure_brew_installed jq
+ensure_brew_installed cmake
+ensure_brew_installed ffmpeg
+ensure_brew_installed wget
+ensure_brew_installed pkg-config
+ensure_brew_installed libgphoto2
+ensure_brew_installed libimobiledevice
+
+# Install idb
+ensure_brew_installed python3
+brew tap facebook/fb
+ensure_brew_installed idb-companion
+pip3 install fb-idb
+
+# Download and install go-ios utility
+cd Downloads/
+wget https://github.com/danielpaulus/go-ios/releases/download/v1.0.121/go-ios-mac.zip
+unzip go-ios-mac.zip
+sudo cp ios /usr/local/bin
+
+# Setup iOS agent
+cd "$HOME"
+mkdir -p tmdc
+cd tmdc
+
+# Clone the repository if it does not exist
+REPO_URL="https://github.com/techm-dc/devicefarmer-stf.git"
+BRANCH="ios-wda-api"
+if [ -d "devicefarmer-stf" ]; then
+  echo "Directory devicefarmer-stf already exists. Skipping clone."
+else
+  if ! git clone --branch $BRANCH $REPO_URL; then
+    echo "Failed to clone repository from $REPO_URL"
+    exit 1
+  fi
+fi
+
+cd devicefarmer-stf
+
+# Ensure NVM is available
+source "$HOME/.bash_profile"
+nvm use 17.1.0
+
+# Clean up existing node_modules to avoid conflicts
+if [ -d "node_modules" ]; then
+  rm -rf node_modules
+fi
+
+# Install bower if not installed
+ensure_npm_global_installed bower
+
+# Install npm dependencies
+#npm install
+# Run bower install and build commands, handling errors
+#if ! bower install; then
+#  echo "bower installation failed"
+#  exit 1
+#fi
+
+#npm link --force
+
+#Install pyenv from Homebrew
+brew install pyenv
+pyenv init
+
+#adding pyenv path to bash profile
+(echo; 'export PYENV_ROOT="$HOME/.pyenv"') >> /Users/$(whoami)/.bash_profile
+(echo; '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"') >> /Users/$(whoami)/.bash_profile
+(echo; 'eval "$(pyenv init -)"') >> /Users/$(whoami)/.bash_profile
+
+pyenv install 3.10.11
+#making global python version
+pyenv global 3.10.11
+
+#install the dependency for python script
+pip3 install -r requirements.txt
