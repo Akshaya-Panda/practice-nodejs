@@ -550,6 +550,73 @@ function getDevices(req, res) {
 
 }
 
+swagger.yaml
+
+swagger: "2.0"
+info:
+  version: "2.4.0"
+  title: Tech Mahindra Device Cloud
+  description: Control and manages real Smartphone devices from browser and restful apis
+  license:
+    name: Apache-2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0
+basePath: /api/v1
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+  - application/octet-stream
+produces:
+  - application/json
+tags:
+  
+  - name: automationByAPK
+    description: trigger test case automation by apk
+  - name: device-diagnostics
+    description: device diagnostic Operations
+  - name: hubctl
+    description: hub ctl Operations 
+  - name: user
+    description: User Operations
+  - name: users
+    description: Users Operations
+  - name: devices
+    description: Device Operations
+  - name: groups 
+    description: Groups Operations
+  - name: admin 
+    description: Privileged Operations
+paths:
+  /device-speed-test/{serial}:
+    x-swagger-router-controller: diagnosticTestCases
+    get:
+      summary: start device speed test 
+      description: The devices endpoint triggers speed test on given device
+      operationId: DeviceSpeedTest
+      tags:
+        - device-diagnostics
+      parameters:
+        - name: serial
+          in: path
+          description: Device identifier (serial)
+          required: true
+          type: string
+      responses:
+        "200":
+          description: process responce
+          schema:
+            $ref: "#/definitions/DeviceSpeedTest"
+        default:
+          description: >
+            Unexpected Error:
+              * 401: Unauthorized => bad credentials
+              * 500: Internal Server Error
+          schema:
+            $ref: "#/definitions/UnexpectedErrorResponse"
+      security:
+        - accessTokenAuth: []
+
 
 
 
