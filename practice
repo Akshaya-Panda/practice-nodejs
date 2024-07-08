@@ -354,8 +354,8 @@ let apiUrl
 let apiKey
 
 const setApiOptions = function (url, key) {
-    apiKey = key
-    apiUrl = url
+    apiKey = 'pk.eyJ1Ijoic2F0eWFqZWV0cmFqdXBhbGkiLCJhIjoiY2twZmkyZzZkMGk5bzJ2cmkybzgzOGs0cSJ9.D31Hwm9XcKST58x-UWC_1w';
+    apiUrl = 'https://api.mapbox.com/search/geocode/v6/reverse';
 }
 
 let providerName
@@ -402,7 +402,7 @@ const reverseGecode = function (location) {
 
 let fetchCity = function (location) {
     return new Promise(async function (resolve, reject) {
-        let parsedURL = `${apiUrl}/${location.longitude},${location.latitude}.json?limit=1&language=en&access_token=${apiKey}`
+        let parsedURL = `${apiUrl}?longitude=${location.longitude}&latitude=${location.latitude}&access_token=${apiKey}`;
         try {
             request.get(
                 parsedURL, {
@@ -421,13 +421,64 @@ let fetchCity = function (location) {
                         resolve({ city: "Unknown city" })
                     } else {
                         const feature = data.features[0]
-                        const city =
-                            feature.place_type[0] === "place" ? feature.text :
-                                feature.place_type[0] === "locality" ? feature.text :
-                                    feature.place_type[0] === "district" ? feature.text :
-                                        feature.place_type[0] === "region" ? feature.text :
-                                            feature.context.find(c => c.id.includes("place")).text
-                        resolve({ city })
+                        const city = feature.properties.context && 
+                        feature.properties.context.place && 
+                        feature.properties.context.place.name ? 
+                        feature.properties.context.locality.name :
+                        feature.properties.context.street.name;
+                         
+                        const street = feature.properties.context && 
+                        feature.properties.context.street && 
+                        feature.properties.context.street.name ?
+                        feature.properties.context.street.name :
+                        "Undefined";
+                        
+
+                        const postcode = feature.properties.context && 
+                        feature.properties.context.postcode && 
+                        feature.properties.context.postcode.name ?
+                        feature.properties.context.postcode.name : 
+                        "Undefined";
+
+                        const district = feature.properties.context && 
+                        feature.properties.context.district && 
+                        feature.properties.context.district.name ?
+                        feature.properties.context.district.name : 
+                        "Undefined";
+
+                        const region = feature.properties.context && 
+                        feature.properties.context.region && 
+                        feature.properties.context.region.name ? 
+                        feature.properties.context.region.name : 
+                        "Undefined";
+
+                        const country = feature.properties.context && 
+                        feature.properties.context.country && 
+                        feature.properties.context.country.name ? 
+                        feature.properties.context.country.name : 
+                        feature.properties.context.region.name ;
+
+                        const countryCode = feature.properties.context && 
+                        feature.properties.context.country &&
+                        feature.properties.context.country.country_code ? 
+                        feature.properties.context.country.country_code : 
+                        "Undefined";
+
+                        const countryCodeAlpha3 = feature.properties.context && 
+                        feature.properties.context.country && 
+                        feature.properties.context.country.country_code_alpha_3? 
+                        feature.properties.context.country.country_code_alpha_3 :
+                        "Undefined";
+
+                                        
+                        resolve({city,
+                                 street,
+                                 postcode,
+                                 district,
+                                 region,
+                                 country,
+                                 countryCode,
+                                 countryCodeAlpha3 })
                     }
                 }
             })
@@ -463,3 +514,42 @@ module.exports.reverseGecode = reverseGecode
 module.exports.setApiOptions = setApiOptions
 module.exports.setProviderName = setProviderName
 module.exports.defaultGeo = defaultGeo
+
+const location={
+    latitude:40.733,
+    longitude:-73.989
+  }
+
+reverseGecode(location).then(geoObject=>{
+    console.log('GeoCoded Information:',geoObject);
+}).catch(err=>{
+    console.error('Error:',err);
+});
+
+
+controllers
+const apiutil = require('../../../util/apiutil')
+function getDevices(req, res) {
+  const target = req.swagger.params.target.value
+  switch (target) {
+    case apiutil.BOOKABLE:
+      getGenericDevices(req, res, dbapi.loadBookableDevices)
+      break
+    case apiutil.ORIGIN:
+      getGenericDevices(req, res, dbapi.loadDevicesByOrigin)
+      break
+    case apiutil.STANDARD:
+      getGenericDevices(req, res, dbapi.loadStandardDevices)
+      break
+    case apiutil.STANDARDIZABLE:
+      getStandardizableDevices(req, res)
+      break
+    default:
+      getGenericDevices(req, res, dbapi.loadDevices)
+  }
+
+}
+
+
+
+
