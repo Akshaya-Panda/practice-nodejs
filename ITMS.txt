@@ -1,0 +1,402 @@
+var logger = require('./logger')
+var log = logger.createLogger('processor')
+const schedule = require('node-schedule');
+const dbapi = require('../db/api')
+var request = require('request');
+const jwtutil = require('./jwtutil')
+let ITMStoken
+let ITMSRefreshtoken
+let syncDelayVal = 0;
+
+// const ITMSAuthprocess = (withrefresh) => {
+
+//     return new Promise((resolve, reject) => {
+//         try {
+//             if (!ITMStoken && !ITMSRefreshtoken) {
+
+
+//                 var options = {
+//                     'method': 'POST',
+//                     'url': itmsUrl + '/api/token',
+//                     'headers': {
+//                         'Content-Type': 'application/x-www-form-urlencoded'
+//                     },
+//                     form: {
+//                         'grant_type': 'password',
+//                         'username': 'AA00888107',
+//                         'password': 'r@Y220800'
+//                     }
+//                 };
+//                 request(options, function (error, response) {
+//                     if (error) {
+//                         reject(error)
+//                     } else {
+//                         resData = JSON.parse(response.body)
+//                        if(resData.error){
+//                         setTimeout(()=>{
+//                             ITMSAuthprocess(false)
+//                         },150000)
+//                         reject(resData)
+//                        }else{
+//                         console.log('newwww token opted from ITMS.....................',resData)
+//                         ITMStoken = resData.access_token
+//                         ITMSRefreshtoken = resData.refresh_token
+
+//                         resolve(response.body.access_token)
+//                        }
+
+
+//                     }
+
+//                 });
+
+//             } else if (withrefresh) {
+//                 // Itms refresh 
+//                 (withrefresh,'withrefreshwithrefreshwithrefresh')
+//                 var options = {
+//                     'method': 'POST',
+//                     'url': itmsUrl + '/api/token',
+//                     'headers': {
+//                         'Content-Type': 'application/x-www-form-urlencoded'
+//                     },
+//                     form: {
+//                         'grant_type': 'refresh_token',
+//                         'refresh_token': ITMSRefreshtoken
+//                     }
+//                 };
+//                 request(options, function (error, response) {
+//                     if (error) {
+//                         reject(error)
+//                     } else {
+//                         resData = JSON.parse(response.body)
+//                         console.log(resData,'resDataresDataresData sdfsdfs')
+//                         if(resData.Type!=='Unauthorized'&&resData.access_token){
+
+//                         ITMStoken = resData.access_token
+//                         ITMSRefreshtoken = resData.refresh_token
+
+//                         resolve(response.body.access_token)
+//                         } else{
+//                             ITMStoken = null
+//                             ITMSRefreshtoken  = null
+//                             ITMSAuthprocess(false)
+
+//                         }
+//                     }
+
+//                 });
+//             } else {
+//                 resolve(ITMStoken)
+//             }
+//         }
+//         catch (e) {
+//             reject(e)
+//         }
+
+//     })
+
+// }
+// ITMSAuthprocess(false)
+const saveDeviceInitialState = (options, serial, device) => {
+    log.info('New Device info send to itms:' + serial)
+    var data = {
+        present: true
+        , presenceChangedAt: new Date().toISOString()
+        , provider: device.provider
+        , owner: null
+        , status: device.status
+        , statusChangedAt: new Date().toISOString()
+        , ready: false
+        , reverseForwards: []
+        , remoteConnect: false
+        , remoteConnectUrl: null
+        , usage: null
+        , logs_enabled: false
+    }
+    new checkAfterdelay({ functionName: 'saveDeviceInitialState', options, serial, data })
+
+}
+// function createPostinITMS(tokenBearer, PlainText) {
+//     return new Promise((resolve, reject) => {
+
+//         var options = {
+//             'method': 'POST',
+//             'url': itmsUrl + '/api/TestScenario/1564479/Post',
+//             'headers': {
+//                 'Authorization': 'Bearer ' + tokenBearer,
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({
+//                 "Html": null,
+//                 "IncompatibleRichTextFeatures": true,
+//                 "PlainText": ` loged at ${new Date().toISOString() } :`+PlainText
+//             })
+
+//         };
+//         request(options, function (error, response) {
+//             if (error) {
+//                 reject(error)
+//             } else {
+//                 resData = JSON.parse(response.body)
+//                 console.log(resData,'createPostinITMScreatePostinITMScreatePostinITMS JSON RESPOMCE+===============================================================>')
+//                 if(resData.message || resData.Message){
+//                     reject({resData,PlainText})
+
+//                 }
+//               else{
+//                     resolve(response.body);
+
+//                 }
+
+
+
+//             }
+//         });
+//     })
+
+// }
+function checkAfterdelay(data) {
+    var d1 = new Date()
+    var date = new Date(d1);
+    let randomDelayVar = Math.random() * 2
+    date.setMinutes(d1.getMinutes() + syncDelayVal + randomDelayVar);
+    let job = schedule.scheduleJob(date, function (dataObj) {
+        dbapi.loadDeviceBySerial(dataObj.serial).then(DataAfterDelay => {
+            var datasanity = true
+            for (key in dataObj.data) {
+                if (!key.includes('ChangedAt')) {
+                    if (dataObj.data[key] != DataAfterDelay[key]) {
+                        if (!DataAfterDelay[key] || !dataObj.data[key] || typeof DataAfterDelay[key] !== 'object') {
+                            datasanity = false
+                        }
+                        else {
+
+                            for (key2 in dataObj.data[key]) {
+                                // if (!key2.includes('ChangedAt')) {
+                                if (dataObj.data[key][key2] != DataAfterDelay[key][key2]) {
+                                    if (typeof dataObj.data[key][key2] !== 'object') {
+                                        datasanity = false
+                                    }
+
+                                }
+                                // }
+
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            if (datasanity) {
+                const jwt = jwtutil.encode({
+                    payload: {
+                        serial: dataObj.serial
+                        , data: dataObj.data
+                        , servername: dataObj.options.appUrl
+                        , deviceInfo: DataAfterDelay
+                    }
+                    , secret: dataObj.options.CMSsecret
+                })
+
+                var requestOptions = {
+                    'method': 'GET',
+                    'url': dataObj.options.CMSurl + '/api/Event/UpdateDeviceDataEvent',
+                    'headers': {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': `Bearer ${jwt}`
+                    }
+                };
+                request(requestOptions, function (error, response) {
+                    if (error) {
+
+                    } else {
+                        try {
+                            resData = JSON.parse(response.body)
+                            if (resData.error) {
+
+
+                            } else {
+
+                            }
+                        } catch (e) {
+
+                        }
+
+                    }
+                })
+       // ITMSAuthprocess(false).then(token => {
+                //     createPostinITMS(token, `device ${dataObj.serial} : call this function ${dataObj.functionName} : ${JSON.stringify(dataObj.data)}`)
+                //         .then(res => {
+                //             console.log('resssssssssssssss from createPostinITMScreatePostinITMScreatePostinITMS'+res)
+                //         }).catch(eArg => {
+                //             console.log('eerr at place oneeeee'+eArg.message || eArg)          
+                //             if(eArg.resData.Type =='Unauthorized'){
+                //                 console.log('tokkkkkkkkkkkkkkkkkkkkkkkkkken  expiresssssssss')
+                //                 ITMSAuthprocess(true).then(token=>{
+                //                 console.log('tokkkkkkkkkkkkkkkkkkkkkkkkkken  refreshed')
+                //                 return createPostinITMS(token, eArg.PlainText)
+                //                }).then(data=>{
+                //                 console.log('data using  refreshed token',data)
+                //                 // resolve(data)
+                //             })
+                //             }else {
+                //                 console.log('tokkkkkkkkkkkkkkkkkkkkkkkkkken  some other errorrr')
+                //                 ITMStoken = null
+                //                 ITMSRefreshtoken = null
+                //                 ITMSAuthprocess(false).then(token=>{
+                //                 console.log('newwww tokkkkkkkkkkkkkkkkkkkkkkkkkken  some other errorrr')
+                //                 return createPostinITMS(token, eArg.PlainText)
+                //                }).then(data=>{
+                //                 console.log('data using  refreshed token',data)
+                //                 // resolve(data)
+                //             }) .catch('still  error in second itration',)
+                //             }
+                //         })
+                // }).catch(e => {
+                //     console.log('eerr at place two00oooo'+e.message || e)
+                // })
+
+            }
+        })
+
+
+    }.bind(null, data));
+}
+
+function sendNowData(dataObj) {
+    var d1 = new Date()
+    var date = new Date(d1);
+
+    dbapi.loadDeviceBySerial(dataObj.serial).then(DataAfterDelay => {
+                const jwt = jwtutil.encode({
+                    payload: {
+                        serial: dataObj.serial
+                        , data: dataObj.data
+                        , servername: dataObj.options.appUrl
+                        , deviceInfo: DataAfterDelay
+                    }
+                    , secret: dataObj.options.CMSsecret
+                })
+              
+                var requestOptions = {
+                    'method': 'GET',
+                    'url': dataObj.options.CMSurl + '/api/Event/UpdateDeviceDataEvent',
+                    'headers': {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': `Bearer ${jwt}`
+                    }
+                };
+                request(requestOptions, function (error, response) {
+                    if (error) {
+                      /*   console.log(error) */
+                    } else {
+                        try{
+                           /*  resData = JSON.parse(response.body) */
+                            if (resData.error) {
+    
+                               
+                            } else {
+                                /* console.log(response.body) */
+                            }
+                        } catch(e){
+                           /*  console.log(e,'not a json') */
+                        }
+                       
+                    }
+                })
+                //         .then(res => {
+                //             console.log('resssssssssssssss from createPostinITMScreatePostinITMScreatePostinITMS'+res)
+                //         }).catch(eArg => {
+                //             console.log('eerr at place oneeeee'+eArg.message || eArg)          
+                //             if(eArg.resData.Type =='Unauthorized'){
+                //                 console.log('tokkkkkkkkkkkkkkkkkkkkkkkkkken  expiresssssssss')
+                //                 ITMSAuthprocess(true).then(token=>{
+                //                 console.log('tokkkkkkkkkkkkkkkkkkkkkkkkkken  refreshed')
+                //                 return createPostinITMS(token, eArg.PlainText)
+                //                }).then(data=>{
+                //                 console.log('data using  refreshed token',data)
+                //                 // resolve(data)
+                //             })
+                //             }else {
+                //                 console.log('tokkkkkkkkkkkkkkkkkkkkkkkkkken  some other errorrr')
+                //                 ITMStoken = null
+                //                 ITMSRefreshtoken = null
+                //                 ITMSAuthprocess(false).then(token=>{
+                //                 console.log('newwww tokkkkkkkkkkkkkkkkkkkkkkkkkken  some other errorrr')
+                //                 return createPostinITMS(token, eArg.PlainText)
+                //                }).then(data=>{
+                //                 console.log('data using  refreshed token',data)
+                //                 // resolve(data)
+                //             }) .catch('still  error in second itration',)
+                //             }
+                //         })
+                // }).catch(e => {
+                //     console.log('eerr at place two00oooo'+e.message || e)
+                // })
+
+    })
+
+}
+
+const setDevicePresent = (options, serial) => {
+    log.info('Device Present info send to itms:' + serial)
+    var data = {
+        present: true
+        , presenceChangedAt: new Date().toISOString()
+    }
+    new checkAfterdelay({ functionName: 'setDevicePresent', options, serial, data })
+}
+
+const setDeviceAbsent = (options, serial) => {
+    log.info('Device removed info send to itms:' + serial)
+    var data = {
+        present: false
+        , presenceChangedAt: new Date().toISOString()
+    }
+    new checkAfterdelay({ functionName: 'setDeviceAbsent', options, serial, data })
+}
+
+const setDeviceReady = (options, serial, channel) => {
+    log.info('Device ready info send to itms:' + serial)
+    var data = {
+        channel: channel
+        , ready: true
+        , owner: null
+        , reverseForwards: []
+    }
+    new sendNowData({ functionName: 'setDeviceReady', options, serial, data })
+}
+
+const unsetDeviceUsage = (options, serial) => {
+    log.info('Device Free info send to itms:' + serial)
+    const data = {
+        usage: null
+        , usageChangedAt: new Date().toISOString()
+        , logs_enabled: false,
+        owner: null
+    }
+    new sendNowData({ functionName: 'unsetDeviceUsage', options, serial, data })
+}
+
+const setDeviceOwner = (options, serial, owner, usage) => {
+    log.info('Device Ocupied info send to itms:' + serial)
+    var data = {
+        usage
+        , usageChangedAt: new Date().toISOString(),
+        owner
+    }
+    new sendNowData({ functionName: 'setDeviceOwner', options, serial, data })
+
+}
+
+const dummy = (...arr) => {
+
+}
+// module.exports = { saveDeviceInitialState, setDevicePresent, setDeviceAbsent, setDeviceReady, unsetDeviceUsage, setDeviceOwner }
+module.exports = {
+    saveDeviceInitialState: saveDeviceInitialState,
+    setDevicePresent: setDevicePresent, setDeviceAbsent: setDeviceAbsent,
+    setDeviceReady: setDeviceReady, unsetDeviceUsage: unsetDeviceUsage
+    , setDeviceOwner: setDeviceOwner
+}
