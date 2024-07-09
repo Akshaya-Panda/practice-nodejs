@@ -618,5 +618,26 @@ paths:
         - accessTokenAuth: []
 
 
+controlers
+
+function getGeocodedLocation(req, res) {
+  const { latitude, longitude } = req.query; 
+
+  if (!latitude || !longitude) {
+      return res.status(400).json({ error: 'Latitude and longitude are required' });
+  }
+
+  const location = { latitude: parseFloat(latitude), longitude: parseFloat(longitude) };
+
+  geocoder.reverseGecode(location)
+      .then(geoObject => {
+          res.status(200).json(geoObject);
+      })
+      .catch(err => {
+          console.error('Error:', err);
+          res.status(500).json({ error: 'Failed to get geocoded information' });
+      });
+}
+
 
 
