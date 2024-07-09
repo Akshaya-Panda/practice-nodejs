@@ -393,7 +393,7 @@ const reverseGecode = function (location) {
             }
 
         } else {
-            geoObject = lookup.geo
+            geoObject = lookup.geoObject
         }
 
         resolve(geoObject)
