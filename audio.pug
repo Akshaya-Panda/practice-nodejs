@@ -1,0 +1,139 @@
+div(ng-controller='AudioCtrl')
+  .widget-container.fluid-height.m-3.stf-screenshots.stf-upload
+    .heading
+      stacked-icon(icon='fa fa-volume-up', color='color-darkgray')
+      span(translate) Audio
+      .pull-right
+    .row.padded
+      .col-md-6 
+        h6(translate) Speak
+        div.special-keys-buttons
+          button(uib-tooltip='{{ "Speak" | translate }}', ng-class="{'audio-active': addInjectClass}" , ng-click='press("inject")').btn.btn-primary.btn-xs
+            i.fa.fa-microphone
+      .col-md-6
+        h6(translate) Listen
+        div.special-keys-buttons
+          button(uib-tooltip='{{ "Listen" | translate }}', ng-class="{'audio-active': addRecordClass}", ng-click='press("record")').btn.btn-primary.btn-xs
+            i.fa.fa-volume-up
+
+
+    .heading
+      stacked-icon(icon='fa-microphone', color='color-blue')
+      span.box-heading(translate) Inject   
+
+    .widget-content.padded.w-30(ng-if="newInjectionFound && !injecting")
+      .drop-area(ng-file-drop='uploadFile($files)', ng-file-drag-over-class='dragover').file-input.btn-file
+        input#fileInput(type='file', ng-file-select='uploadFile($files)')
+
+        i.fa.fa-2x.fa-download.drop-area-icon
+        .drop-area-text(translate) Drop file to upload
+
+
+    .widget-content.padded.flex-box(ng-show="newInjectionFound && !injecting")
+        // NOTE: autofill doesn't work here
+        .input-group.form-inline
+          input(type='number', ng-model='injSec', Xtext-focus-select,
+            autocapitalize='off', spellcheck='false',  placeholder='{{"Seconds"|translate}}'
+            tabindex='30', accesskey='S', autocomplete='on').form-control.shell-input
+
+        button.btn.btn-sm.btn-primary.m-3( ng-click='openFileSelector()'
+          title='{{"Open file selector"|translate}}')
+            i.fa.fa-microphone
+            span(translate) Inject   
+    
+    .padded.circle-container(ng-if="!newInjectionFound && injecting")
+      .circle
+        span.progress(ng-style="{ width: ((currentSecondsWhileInjecting / injSec) * 100) + '%' }")
+        span.number {{currentSecondsWhileInjecting}}
+              
+    //(ng-if="!isRecording && !pending")
+    .widget-content.padded
+      h4 {{"Injected Audios" | translate}}
+      table.table.table-condensed(ng-if="injections.length > 0")
+        thead
+          tr
+            th(colspan='1')
+              span(translate) Audio
+            th(colspan='1')
+              span(translate) File Duration
+            th(colspan='1')
+              span(translate) Date
+            th(colspan='1', ng-if="isAdmin")
+              span(translate) User
+            th(colspan='2')
+              span(translate) Actions
+        tbody
+          tr(ng-repeat='injection in injections track by $index')
+            td(width='20%')
+              span {{injection.fileName}}
+            td(width='20%')
+              span {{injection.duration | number: 2}} seconds
+            td(width='25%')
+              span {{injection.timestamp | date: 'dd/MM/yyyy hh:mm a'}}
+            td(width='15%', ng-if="isAdmin")
+              span {{injection.user.name}}
+            td(width='15%')
+              button.btn.btn-sm.btn-primary-outline(ng-click='reinjectModal(injection)')
+                i.fa.fa-microphone
+                span(translate) Re-inject
+            td(width='5%')
+              button.btn.btn-xs.btn-danger-outline.checkbox(ng-click='deleteInjection(injection)')
+                i.fa.fa-trash-o
+                
+      div(ng-if="injections.length == 0")
+        span No Audios injected yet
+          
+  .widget-container.fluid-height.m-3.stf-screenshots
+    .heading
+        stacked-icon(icon='fa-circle', color='color-blue')
+        span.box-heading(translate) Record
+
+    .padded(ng-if="recording")
+      button.btn.btn-sm.btn-primary-outline(ng-if="recording" ,ng-click='stopProcess(recordprocessid)')
+        i.fa.fa-circle
+        span(ng-if="recording", translate) Stop recording
+
+    .padded.circle-container(ng-if="!newRecordingFound && recording")
+      .circle
+        span.progress(ng-style="{ width: ((currentSecondsWhileRecording / seconds) * 100) + '%' }")
+        span.number {{currentSecondsWhileRecording}}
+
+    div(ng-show="!recording && newRecordingFound")
+      .widget-content.padded.flex-box
+        // NOTE: autofill doesn't work here
+        .input-group.form-inline
+          input(type='number', ng-model='seconds', Xtext-focus-select,  placeholder='{{"Seconds"|translate}}'
+            autocapitalize='off', spellcheck='false',
+            tabindex='30', accesskey='S', autocomplete='on').form-control.shell-input
+        button.btn.btn-sm.btn-primary.m-3( ng-click='record()'
+        title='{"Record"|translate}}')
+            i.fa.fa-circle
+            span(translate) Record
+      
+
+    .widget-content.padded(ng-if="!isRecording && !pending")
+      h4 {{"Recorded Audios" | translate}}
+      table.table.table-condensed(ng-if="recordings.length > 0")
+        thead
+          tr
+            th(colspan='1')
+              span(translate) Audio
+            th(colspan='1')
+              span(translate) Date
+            th(colspan='1')
+            th(colspan='1')
+        tbody
+          tr(ng-repeat='recording in recordings track by $index')
+            td(width='30%')
+              span {{recording.audioFileName}}
+            td(width='30%')
+              span {{recording.startTimestamp | date: 'dd/MM/yyyy hh:mm a'}}
+            td(width='20%')
+              button.btn.btn-sm.btn-danger-outline(ng-click='download(recording)')
+                i.fa.fa-save
+                span(translate) Download
+            td(width='20%')
+              button.btn.btn-xs.btn-danger-outline.checkbox(ng-click='deleteRecording(recording)')
+                i.fa.fa-trash-o
+      div(ng-if="recordings.length == 0")
+        span No Audios recorded yet
