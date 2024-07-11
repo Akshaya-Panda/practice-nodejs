@@ -1,4 +1,18 @@
 div(ng-controller='AudioCtrl')
+
+
+   .widget-container.fluid-height.m-3.stf-screenshots
+    .heading
+      stacked-icon(icon='fa fa-bluetooth', color='color-darkgray')
+      span(translate) Bluetooth
+      .pull-right
+    .row.padded
+      .col-md-6
+        .flex-box
+          .circle-container
+            .circle#bluetooth-circle
+          button#bluetooth-connect.btn.btn-primary(ng-click='toggleBluetoothConnection()')
+            span Connect
   .widget-container.fluid-height.m-3.stf-screenshots.stf-upload
     .heading
       stacked-icon(icon='fa fa-volume-up', color='color-darkgray')
