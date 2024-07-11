@@ -1,0 +1,17 @@
+.widget-container.fluid-height.stf-screen-record(ng-controller='ScreenRecordingCtrl')
+  .heading
+    stacked-icon(icon='fa-camera' color='color-pink')
+    span(translate) Screen Recording
+    
+  .widget-content.padded.pt-0(ng-if="pending")
+    i.fa.fa-spinner.fa-spin.fa-fw
+  
+  .widget-content.padded.pt-0
+    div.row(ng-if="!pending")
+      .col-md-2.pad
+        button(ng-if="!isRecording && !isEncoding" uib-tooltip='{{ "Start Recording" | translate }}' ng-click='startRecording()').btn.btn-primary.btn-sm
+          i.fa.fa-circle.record-btn
+          span(translate) Start Recording
+        button(ng-if="isRecording" uib-tooltip='{{ "Stop Recording" | translate }}' ng-click='stopRecording()').btn.btn-primary.btn-sm
+          i.fa.fa-stop
+          span(translate) Stop Recording
