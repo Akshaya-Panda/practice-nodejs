@@ -671,3 +671,4 @@ function getDeviceBySerial(req, res) {
     })
 }
 
+{"controllers":[{"macAddress":"08:BE:AC:30:DD:63","deviceName":"raspberrypi #1 [default]","connectedDevices":[]},{"macAddress":"08:BE:AC:35:8E:BD","deviceName":"raspberrypi #4","connectedDevices":[]},{"macAddress":"D8:3A:DD:D1:89:08","deviceName":"Sandstorm","connectedDevices":[]}]}
