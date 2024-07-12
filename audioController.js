@@ -642,3 +642,154 @@ $scope.connectController = function(controller) {
       }
     }
   };
+
+
+
+
+
+
+
+$scope.injections = []
+  $scope.newRecordingFound = true;
+  $scope.newInjectionFound = true;
+  $scope.isAdmin = UserService.currentUser.privilege == 'admin'
+  $scope.addRecordClass = false;
+  let isRecording = false;
+  let socket;
+  let bool = false;
+  let recorderBrowserInput;
+  let firstBuffer;
+  let playrecord = false;
+  let liveInjecting = false;
+  $scope.audioUrl = "wss://tm-reddev03.oasisofsolution.com/audio-streaming-websocket/"
+  const audioContext = new AudioContext();
+  let scheduledTime = audioContext.currentTime;
+  let recordingProcessId;
+  $scope.isBluetoothConnected = false;
+  $scope.controllers = [
+    {"macAddress":"08:BE:AC:30:DD:63","deviceName":"raspberrypi #1 [default]","connectedDevices":[]},
+    {"macAddress":"08:BE:AC:35:8E:BD","deviceName":"raspberrypi #4","connectedDevices":[]},
+    {"macAddress":"D8:3A:DD:D1:89:08","deviceName":"Sandstorm","connectedDevices":[]}
+  ]; 
+  const allControllers = angular.copy($scope.controllers);
+ 
+  $scope.toggleControllerConnection = function(controller) {
+    if (controller.connected) {
+      $scope.disconnectController(controller);
+    } else {
+      $scope.connectController(controller);
+    }
+  };
+ 
+  $scope.connectController = function(controller) {
+    if ($scope.isBluetoothConnected) {
+      $scope.disconnectCurrentController().then(function() {
+        $scope.connectToController(controller);
+      });
+    } else {
+      $scope.connectToController(controller);
+    }
+  };
+ 
+  $scope.connectToController = function(controller) {
+    connectBluetooth().then(function() {
+      $scope.isBluetoothConnected = true;
+      controller.connected = true;
+      $scope.controllers = $scope.controllers.filter(c => c.connected);
+    });
+  };
+ 
+  $scope.disconnectController = function(controller) {
+    disconnectBluetooth().then(function() {
+      controller.connected = false;
+      if (!$scope.controllers.some(c => c.connected)) {
+        $scope.isBluetoothConnected = false;
+        $scope.controllers = angular.copy(allControllers);
+      }
+    });
+  };
+ 
+  $scope.disconnectCurrentController = function() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        $scope.controllers.forEach(controller => controller.connected = false);
+        $scope.isBluetoothConnected = false;
+        resolve();
+      }, 1000);
+    });
+  };
+ 
+  function connectBluetooth() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  }
+ 
+  function disconnectBluetooth() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  }
+ 
+  $scope.toggleBluetoothConnection = function() {
+    if ($scope.isBluetoothConnected) {
+      $scope.disconnectCurrentController().then(() => {
+        $scope.controllers = angular.copy(allControllers);
+      });
+    } else {
+      if ($scope.controllers.length > 0) {
+        $scope.connectToController($scope.controllers[0]);
+      }
+    }
+  };
+
+   $scope.executeAndSaveLocally = function () {
+    $scope.control.shell('settings get secure bluetooth_address')
+      .then(function (result) {
+        let bluetooth_mac_address = result.data[0].replace(/\n/g, '').trim();
+        let convertedString = bluetooth_mac_address.replaceAll(':', '_');
+        $scope.shellCommandResult = convertedString;
+      })
+  };
+
+  init();
+
+  function init() {
+    $scope.fileSelected = []
+    $scope.pending = false;
+    $scope.currentUser = CommonService.merge({}, UserService.currentUser);
+    //getBluetoothStatus()
+    getAudioRecordings()
+    getAudioInjections()
+    if (!socket || socket.readyState == WebSocket.CLOSED) {
+      setupsocket()
+    }
+  }
+
+  $scope.executeAndSaveLocally();
+
+  $scope.openFileSelector = function () {
+    if ($scope.fileSelected.length) {
+      $scope.inject()
+    } else {
+      document.getElementById('fileInput').click();
+    }
+  };
+
+  $scope.uploadFile = function ($file) {
+    $scope.fileSelected = $file
+  }
+
+  function capturemicrophone(callback) {
+    $window.navigator.mediaDevices.getUserMedia({ audio: true }).then(function (microphone) {
+      callback(microphone);
+    }).catch(function (error) {
+      $window.alert('Unable to capture your microphone. Please check console logs.');
+      console.error(error);
+    });
+  }
+
