@@ -151,3 +151,28 @@ div(ng-controller='AudioCtrl')
                 i.fa.fa-trash-o
       div(ng-if="recordings.length == 0")
         span No Audios recorded yet
+
+
+/////////Bluetooth Section///////////////
+.widget-container.fluid-height.m-3.stf-screenshots
+    .heading
+      stacked-icon(icon='fa fa-bluetooth', color='color-darkgray')
+      span(translate) Bluetooth
+      .pull-right
+    .row.padded
+      .col-md-6
+        .flex-box
+          .circle-container
+            .circle#bluetooth-circle(ng-class="{'connected': isBluetoothConnected, 'disconnected': !isBluetoothConnected}")
+              i.fa.fa-bluetooth
+          button#bluetooth-connect.btn.btn-link(ng-click='toggleBluetoothConnection()')
+            span {{ isBluetoothConnected ? 'Disconnect' : 'Connect' }}
+     .row.padded
+      .col-md-12
+        .heading
+          span Controllers
+          ul
+          li(ng-repeat="controller in controllers" ng-class="{'connected': controller.connected}")
+            span {{ controller.deviceName }} ({{ controller.macAddress }})
+            button.btn.btn-link(ng-click="connectController(controller)" ng-if="!controller.connected") Connect
+            span(ng-if="controller.connected") Connected
