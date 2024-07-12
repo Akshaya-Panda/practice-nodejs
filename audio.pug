@@ -165,14 +165,14 @@ div(ng-controller='AudioCtrl')
           .circle-container
             .circle#bluetooth-circle(ng-class="{'connected': isBluetoothConnected, 'disconnected': !isBluetoothConnected}")
               i.fa.fa-bluetooth
-          button#bluetooth-connect.btn.btn-link(ng-click='toggleBluetoothConnection()')
-            span {{ isBluetoothConnected ? 'Disconnect' : 'Connect' }}
-     .row.padded
+          //- button#bluetooth-connect.btn.btn-link(ng-click='toggleBluetoothConnection()')
+          //- span {{ isBluetoothConnected ? 'Disconnect' : 'Connect' }}
+    .row.padded
       .col-md-12
         .heading
-          span Controllers
-          ul
+          h3 {{"Controllers" | translate}}
+        ul
           li(ng-repeat="controller in controllers" ng-class="{'connected': controller.connected}")
-            span {{ controller.deviceName }} ({{ controller.macAddress }})
-            button.btn.btn-link(ng-click="connectController(controller)" ng-if="!controller.connected") Connect
-            span(ng-if="controller.connected") Connected
+            span {{ controller.deviceName }}
+            button.btn.btn-link(ng-click="toggleControllerConnection(controller)")
+              span {{ controller.connected ? 'Disconnect' : 'Connect' }}
