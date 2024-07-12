@@ -586,3 +586,59 @@ console.error("Error re-injecting audio " + error)
     }
   }
 }
+
+
+
+
+//Bluetooth part
+
+$scope.connectController = function(controller) {
+    if ($scope.isBluetoothConnected) {
+     
+      $scope.disconnectCurrentController().then(function() {
+        $scope.connectToController(controller);
+      });
+    } else {
+      
+      $scope.connectToController(controller);
+    }
+  };
+ 
+  $scope.connectToController = function(controller) {
+    
+    connectBluetooth().then(function() {
+      $scope.isBluetoothConnected = true;
+      controller.connected = true;
+      $scope.controllers = $scope.controllers.filter(c => c.connected);
+    });
+  };
+ 
+  $scope.disconnectCurrentController = function() {
+    return new Promise((resolve, reject) => {
+      
+      setTimeout(() => {
+        $scope.controllers.forEach(controller => controller.connected = false);
+        $scope.isBluetoothConnected = false;
+        resolve();
+      }, 1000);
+    });
+  };
+ 
+  function connectBluetooth() {
+    return new Promise((resolve, reject) => {
+     
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  }
+ 
+  $scope.toggleBluetoothConnection = function() {
+    if ($scope.isBluetoothConnected) {
+      $scope.disconnectCurrentController();
+    } else {
+      if ($scope.controllers.length > 0) {
+        $scope.connectToController($scope.controllers[0]);
+      }
+    }
+  };
