@@ -649,23 +649,8 @@ $scope.connectController = function(controller) {
 
 
 
-$scope.injections = []
-  $scope.newRecordingFound = true;
-  $scope.newInjectionFound = true;
-  $scope.isAdmin = UserService.currentUser.privilege == 'admin'
-  $scope.addRecordClass = false;
-  let isRecording = false;
-  let socket;
-  let bool = false;
-  let recorderBrowserInput;
-  let firstBuffer;
-  let playrecord = false;
-  let liveInjecting = false;
-  $scope.audioUrl = "wss://tm-reddev03.oasisofsolution.com/audio-streaming-websocket/"
-  const audioContext = new AudioContext();
-  let scheduledTime = audioContext.currentTime;
-  let recordingProcessId;
-  $scope.isBluetoothConnected = false;
+$scope.isBluetoothConnected = false;
+  $scope.connectedDeviceName = '';
   $scope.controllers = [
     {"macAddress":"08:BE:AC:30:DD:63","deviceName":"raspberrypi #1 [default]","connectedDevices":[]},
     {"macAddress":"08:BE:AC:35:8E:BD","deviceName":"raspberrypi #4","connectedDevices":[]},
@@ -695,6 +680,7 @@ $scope.injections = []
     connectBluetooth().then(function() {
       $scope.isBluetoothConnected = true;
       controller.connected = true;
+      $scope.connectedDeviceName = controller.deviceName;
       $scope.controllers = $scope.controllers.filter(c => c.connected);
     });
   };
@@ -702,6 +688,7 @@ $scope.injections = []
   $scope.disconnectController = function(controller) {
     disconnectBluetooth().then(function() {
       controller.connected = false;
+      $scope.connectedDeviceName = '';
       if (!$scope.controllers.some(c => c.connected)) {
         $scope.isBluetoothConnected = false;
         $scope.controllers = angular.copy(allControllers);
@@ -746,50 +733,4 @@ $scope.injections = []
       }
     }
   };
-
-   $scope.executeAndSaveLocally = function () {
-    $scope.control.shell('settings get secure bluetooth_address')
-      .then(function (result) {
-        let bluetooth_mac_address = result.data[0].replace(/\n/g, '').trim();
-        let convertedString = bluetooth_mac_address.replaceAll(':', '_');
-        $scope.shellCommandResult = convertedString;
-      })
-  };
-
-  init();
-
-  function init() {
-    $scope.fileSelected = []
-    $scope.pending = false;
-    $scope.currentUser = CommonService.merge({}, UserService.currentUser);
-    //getBluetoothStatus()
-    getAudioRecordings()
-    getAudioInjections()
-    if (!socket || socket.readyState == WebSocket.CLOSED) {
-      setupsocket()
-    }
-  }
-
-  $scope.executeAndSaveLocally();
-
-  $scope.openFileSelector = function () {
-    if ($scope.fileSelected.length) {
-      $scope.inject()
-    } else {
-      document.getElementById('fileInput').click();
-    }
-  };
-
-  $scope.uploadFile = function ($file) {
-    $scope.fileSelected = $file
-  }
-
-  function capturemicrophone(callback) {
-    $window.navigator.mediaDevices.getUserMedia({ audio: true }).then(function (microphone) {
-      callback(microphone);
-    }).catch(function (error) {
-      $window.alert('Unable to capture your microphone. Please check console logs.');
-      console.error(error);
-    });
-  }
 
