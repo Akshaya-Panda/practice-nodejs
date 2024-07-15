@@ -699,3 +699,9 @@ app.get('/app/api/v1/state.js', function(req, res) {
   server.listen(options.port)
   log.info('Listening on port %d', options.port)
 }
+
+
+name: 'stf-app-3100',
+	  cwd: '__PROJECT_DIR__',
+   script: ` stf app --port 3100   --auth-url http://__TMDC_URL__/auth/saml/   --websocket-url http://__TMDC_URL__/ --secret __SECRET_KEY__`
+}
