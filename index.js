@@ -21,7 +21,9 @@
         return options.userProfileUrl
       })()
     }
-
+res.type('application/javascript')
+    res.send('var GLOBAL_APPSTATE = ' + JSON.stringify(state))
+  })
 
 
     module.exports.command = 'app'
