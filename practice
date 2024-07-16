@@ -735,3 +735,27 @@ name: 'stf-app-3100',
           }
           return extra
         })()))
+
+.option('rp-audio', {
+      describe: 'Array of rp-audio configurations.'
+    // , type: 'array'
+    // , demandOption: true
+    // , normalize: true
+    // , default: [],
+    // coerce: (val) => {
+    //   return val.map((obj) => {
+    //     return { name: obj.name, subdomain: obj.subdomain };
+    //   });
+    // },
+    ,type: 'array',
+     array:true,
+     default:[],
+     coerce: (arg) => {
+      return arg.map(item => JSON.parse(item)); 
+    }
+    })
+    .epilog('Each option can be be overwritten with an environment variable ' +
+      'by converting the option to uppercase, replacing dashes with ' +
+      'underscores and prefixing it with `TMSS_APP_` (e.g. ' +
+      '`TMSS_APP_AUTH_URL`).')
+}
