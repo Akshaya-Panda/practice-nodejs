@@ -707,3 +707,31 @@ name: 'stf-app-3100',
 }
 
 "rp-audio":[{name:'ras1',subdomain:'something'}]
+
+
+
+ procutil.fork(path.resolve(__dirname, '..'), [
+          'app'
+        , '--port', argv.appPort
+        , '--secret', argv.authSecret
+        , '--auth-url', argv.authUrl || util.format(
+            'http://%s:%d/auth/%s/'
+          , argv.publicIp
+          , argv.port
+          , {
+            oauth2: 'oauth'
+          , saml2: 'saml'
+          }[argv.authType] || argv.authType
+          )
+        , '--websocket-url', util.format(
+            'http://%s:%d/'
+          , argv.publicIp
+          , argv.websocketPort
+          )
+        ].concat((function() {
+          var extra = []
+          if (argv.userProfileUrl) {
+            extra.push('--user-profile-url', argv.userProfileUrl)
+          }
+          return extra
+        })()))
