@@ -175,3 +175,13 @@ module.exports = {
     primaryKey: 'injectionID'
   },
 }
+
+ rpAudioModules: {
+    primaryKey: 'id',
+    indexes: {  
+    name: null, 
+    subroute: null,   
+    localip: null,     
+    port: null  
+    }        
+  },
