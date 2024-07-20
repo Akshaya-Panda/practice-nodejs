@@ -141,3 +141,38 @@ dbapi.updateHubctlData = function (hubctldata) {
 dbapi.updateUserPrivilege = function (email, privilege) {
   return db.run(r.table('users').get(email).update({ privilege }))
 }
+
+dbapi.saveUserAccessToken = function (email, token) {
+  return db.run(r.table('accessTokens').insert({
+    email: email
+    , id: token.id
+    , title: token.title
+    , jwt: token.jwt
+  }, { returnChanges: true }))
+}
+
+dbapi.removeUserAccessTokens = function (email) {
+  return db.run(r.table('accessTokens').getAll(email, {
+    index: 'email'
+  }).delete())
+}
+
+dbapi.removeUserAccessToken = function (email, title) {
+  return db.run(r.table('accessTokens').getAll(email, {
+    index: 'email'
+  }).filter({ title: title }).delete())
+}
+
+dbapi.removeAccessToken = function (id) {
+  return db.run(r.table('accessTokens').get(id).delete())
+}
+
+dbapi.loadAccessTokens = function (email) {
+  return db.run(r.table('accessTokens').getAll(email, {
+    index: 'email'
+  }))
+}
+
+dbapi.loadAccessToken = function (id) {
+  return db.run(r.table('accessTokens').get(id))
+}
